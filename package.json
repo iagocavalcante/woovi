@@ -2,6 +2,7 @@
   "name": "woovi",
   "private": true,
   "scripts": {
+    "commit": "cz",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",

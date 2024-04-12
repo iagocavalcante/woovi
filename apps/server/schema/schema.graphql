@@ -1,0 +1,95 @@
+"""root of all queries"""
+type Query {
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Fetches objects given their IDs"""
+  nodes(
+    """The IDs of objects"""
+    ids: [ID!]!
+  ): [Node]!
+  todos(after: String, first: Int, before: String, last: Int): todoConnectionConnection!
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""A connection to a list of items."""
+type todoConnectionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [todoConnectionEdge]
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""An edge in a connection."""
+type todoConnectionEdge {
+  """The item at the end of the edge"""
+  node: Todos
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""Thats a todo's structure in the database."""
+type Todos implements Node {
+  """The ID of an object"""
+  id: ID!
+  title: String!
+  description: String!
+  completedAt: String
+  isDone: Boolean!
+}
+
+"""Root of mutations"""
+type Mutation {
+  todoCreateMutation(input: TodoCreateInput!): TodoCreatePayload
+  todoDeleteMutation(input: TodoDeleteInput!): TodoDeletePayload
+}
+
+type TodoCreatePayload {
+  todoEdge: todoConnectionEdge
+  clientMutationId: String
+}
+
+input TodoCreateInput {
+  title: String!
+  description: String!
+  isDone: Boolean
+  clientMutationId: String
+}
+
+type TodoDeletePayload {
+  todoId: ID
+
+  """Default success field resolver."""
+  success: String
+  clientMutationId: String
+}
+
+input TodoDeleteInput {
+  todoId: String!
+  clientMutationId: String
+}
